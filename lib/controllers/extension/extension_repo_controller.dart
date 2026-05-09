@@ -7,8 +7,8 @@ import 'package:miru_app/utils/miru_storage.dart';
 import 'package:miru_app/utils/request.dart';
 
 class ExtensionRepoPageController extends GetxController {
-  List<dynamic> extensions = <dynamic>[].obs;
-  List<dynamic> extensionsTemp = <dynamic>[];
+  final extensions = <dynamic>[].obs;
+  final extensionsTemp = <dynamic>[].obs;
 
   final isLoading = false.obs;
   final isError = false.obs;
@@ -28,7 +28,7 @@ class ExtensionRepoPageController extends GetxController {
     try {
       final res = await dio.get<String>(
           '${MiruStorage.getSetting(SettingKey.miruRepoUrl)}/index.json');
-      extensions = jsonDecode(res.data!);
+      extensions.value = List<dynamic>.from(jsonDecode(res.data!));
       if (!MiruStorage.getSetting(SettingKey.enableNSFW)) {
         extensions.removeWhere((element) => element['nsfw'] == "true");
       }

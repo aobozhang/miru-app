@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildContent() {
+    // 只在数据为空时监听变化，其他子组件独立重建
     return Obx(
       () {
         if (c.resents.isEmpty &&
@@ -54,26 +55,30 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (c.resents.isNotEmpty) ...[
-                  HomeRecent(
-                    data: c.resents,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (c.favorites.isNotEmpty) ...[
-                  HomeFavorites(
-                    type: ExtensionType.bangumi,
-                    data: c.favorites[ExtensionType.bangumi]!,
-                  ),
-                  HomeFavorites(
-                    type: ExtensionType.manga,
-                    data: c.favorites[ExtensionType.manga]!,
-                  ),
-                  HomeFavorites(
-                    type: ExtensionType.fikushon,
-                    data: c.favorites[ExtensionType.fikushon]!,
-                  ),
-                ]
+                // HomeRecent 只在自己的数据变化时重建
+                Obx(() => c.resents.isNotEmpty
+                    ? HomeRecent(data: c.resents)
+                    : const SizedBox.shrink()),
+                const SizedBox(height: 16),
+                // 每个 HomeFavorites 只监听自己对应的类型
+                Obx(() => c.favorites[ExtensionType.bangumi]!.isNotEmpty
+                    ? HomeFavorites(
+                        type: ExtensionType.bangumi,
+                        data: c.favorites[ExtensionType.bangumi]!,
+                      )
+                    : const SizedBox.shrink()),
+                Obx(() => c.favorites[ExtensionType.manga]!.isNotEmpty
+                    ? HomeFavorites(
+                        type: ExtensionType.manga,
+                        data: c.favorites[ExtensionType.manga]!,
+                      )
+                    : const SizedBox.shrink()),
+                Obx(() => c.favorites[ExtensionType.fikushon]!.isNotEmpty
+                    ? HomeFavorites(
+                        type: ExtensionType.fikushon,
+                        data: c.favorites[ExtensionType.fikushon]!,
+                      )
+                    : const SizedBox.shrink()),
               ],
             ),
           ),

@@ -31,7 +31,7 @@ void main(List<String> args) async {
 
     // 多窗口
     if (args.firstOrNull == 'multi_window') {
-      final windowId = int.parse(args[1]);
+      final windowId = args[1];
       final arguments = args[2].isEmpty
           ? const {}
           : jsonDecode(args[2]) as Map<String, dynamic>;
@@ -49,7 +49,11 @@ void main(List<String> args) async {
     await MiruDirectory.ensureInitialized();
     await MiruStorage.ensureInitialized();
     MiruLog.ensureInitialized();
-    await ApplicationUtils.ensureInitialized();
+    try {
+      await ApplicationUtils.ensureInitialized();
+    } catch (e) {
+      logger.severe("ApplicationUtils initialization failed", e);
+    }
     await MiruRequest.ensureInitialized();
     ExtensionUtils.ensureInitialized();
     MediaKit.ensureInitialized();
@@ -62,7 +66,7 @@ void main(List<String> args) async {
         size: size,
         center: true,
         skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.hidden,
+        titleBarStyle: TitleBarStyle.normal,
       );
       windowManager.waitUntilReadyToShow(windowOptions, () async {
         final position = MiruStorage.getSetting(SettingKey.windowPosition);

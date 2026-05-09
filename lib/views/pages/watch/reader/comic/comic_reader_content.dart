@@ -25,6 +25,22 @@ class _ComicReaderContentState extends State<ComicReaderContent> {
   @override
   void initState() {
     super.initState();
+    // 初始加载时预加载前几张图片
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadImages(0);
+    });
+  }
+
+  void _preloadImages(int currentIndex) {
+    if (_c.watchData.value == null) return;
+    final urls = _c.watchData.value!.urls;
+    final headers = _c.watchData.value?.headers;
+    for (int i = currentIndex; i < urls.length && i <= currentIndex + 2; i++) {
+      precacheImage(
+        ExtendedNetworkImageProvider(urls[i], headers: headers, cache: true),
+        context,
+      );
+    }
   }
 
   late final _c = Get.find<ComicController>(tag: widget.tag);
@@ -164,6 +180,7 @@ class _ComicReaderContentState extends State<ComicReaderContent> {
                 reverse: readerType == MangaReadMode.rightToLeft,
                 onPageChanged: (index) {
                   _c.currentPage.value = index;
+                  _preloadImages(index);
                 },
                 scrollDirection: Axis.horizontal,
                 controller: _c.pageController.value,

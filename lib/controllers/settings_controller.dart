@@ -10,6 +10,7 @@ import 'package:miru_app/utils/request.dart';
 class SettingsController extends GetxController {
   final contributors = [].obs;
   final extensionLogWindowId = (-1).obs;
+  WindowController? _extensionLogWindowController;
 
   final links = {
     'Github': 'https://github.com/miru-project/miru-app',
@@ -26,24 +27,23 @@ class SettingsController extends GetxController {
 
   void toggleExtensionLogWindow(bool open) async {
     if (open && extensionLogWindowId.value == -1) {
-      final window = await DesktopMultiWindow.createWindow(jsonEncode({
-        "name": 'debug',
-      }));
-      extensionLogWindowId.value = window.windowId;
-      window
-        ..center()
-        ..setTitle("miru extension debug")
-        ..show();
+      final window = await WindowController.create(WindowConfiguration(
+        arguments: jsonEncode({"name": 'debug'}),
+        hiddenAtLaunch: true,
+      ));
+      extensionLogWindowId.value = int.parse(window.windowId);
+      _extensionLogWindowController = window;
+      ExtensionUtils.setDebugWindowController(window);
+      await window.show();
 
       // 用于检测窗口是否关闭
       Timer.periodic(const Duration(seconds: 1), (timer) async {
         try {
-          await DesktopMultiWindow.invokeMethod(
-            extensionLogWindowId.value,
-            "state",
-          );
+          await window.invokeMethod("state");
         } catch (e) {
           extensionLogWindowId.value = -1;
+          _extensionLogWindowController = null;
+          ExtensionUtils.setDebugWindowController(null);
           timer.cancel();
         }
       });
@@ -58,14 +58,15 @@ class SettingsController extends GetxController {
 
       return;
     }
-    WindowController.fromWindowId(extensionLogWindowId.value).close();
+    await _extensionLogWindowController?.hide();
     extensionLogWindowId.value = -1;
+    ExtensionUtils.setDebugWindowController(null);
+    _extensionLogWindowController = null;
   }
 
   // 返回执行结果
   _invokeMethodResult(String methodKey, dynamic result) async {
-    await DesktopMultiWindow.invokeMethod(
-      extensionLogWindowId.value,
+    await _extensionLogWindowController?.invokeMethod(
       "result",
       {
         "key": methodKey,
@@ -76,12 +77,9 @@ class SettingsController extends GetxController {
 
   // 获取方法列表
   Future<List<Map<String, dynamic>>> _getMethods() async {
-    final methods = await DesktopMultiWindow.invokeMethod(
-      extensionLogWindowId.value,
-      "getMethods",
-    );
+    final methods = await _extensionLogWindowController?.invokeMethod("getMethods");
 
-    return List<dynamic>.from(methods)
+    return List<dynamic>.from(methods ?? [])
         .map((e) => Map<String, dynamic>.from(e))
         .toList();
   }

@@ -508,7 +508,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 desktopWidget: fluent.FilledButton(
                   onPressed: () async {
-                    final path = await FilePicker.platform.saveFile(
+                    final path = await FilePicker.saveFile(
                       type: FileType.custom,
                       allowedExtensions: ['log'],
                       fileName: 'miru.log',

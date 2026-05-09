@@ -28,6 +28,10 @@ Future<void> launchDesktopExternalPlayer(
     Map<String, String> headers,
     List<ExtensionBangumiWatchSubtitle> subs) async {
   final subLink = subs.map((e) => e.url).toList();
+  // Handle built-in or default - use vlc as default
+  if (player == 'built-in' || player.isEmpty) {
+    player = 'vlc';
+  }
   //windows
   if (Platform.isWindows) {
     switch (player) {
@@ -36,6 +40,10 @@ Future<void> launchDesktopExternalPlayer(
         await Process.run(vlc, [playUrl]);
         break;
       case "potplayer":
+        await _launchExternalPlayer("potplayer://$playUrl");
+        break;
+      default:
+        // Try potplayer protocol as fallback (mpv and others support it)
         await _launchExternalPlayer("potplayer://$playUrl");
         break;
     }
@@ -57,12 +65,13 @@ Future<void> launchDesktopExternalPlayer(
       }
 
       final uA = headers.remove("User-Agent");
-      final headerFields =
-          headers.entries.map((e) => '${e.key}: ${e.value}').join(', ');
+      final headerFields = headers.entries
+          .map((e) => "'${e.key}: ${e.value}'")
+          .join(',');
       await Process.run("mpv", [
         playUrl,
         '--user-agent=$uA',
-        if (headerFields.isNotEmpty) '--http-header-fields="$headerFields"',
+        if (headerFields.isNotEmpty) '--http-header-fields=$headerFields',
         if (subLink.isNotEmpty) '--sub-files=${sub.join(":")}',
       ]);
       break;

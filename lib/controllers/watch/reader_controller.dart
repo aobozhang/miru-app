@@ -64,6 +64,13 @@ class ReaderController<T> extends GetxController {
     });
   }
 
+  @override
+  void onClose() {
+    _timer?.cancel();
+    _timer = null;
+    super.onClose();
+  }
+
   addHistory(String progress, String totalProgress) async {
     await DatabaseService.putHistory(
       History()

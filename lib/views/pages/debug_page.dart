@@ -63,7 +63,8 @@ class _ExtensionDebugWindowState extends State<ExtensionDebugWindow> {
 
   @override
   void initState() {
-    DesktopMultiWindow.setMethodHandler((call, fromWindowId) async {
+    WindowController.fromCurrentEngine().then((controller) {
+      controller.setWindowMethodHandler((call) async {
       if (call.method == "addLog") {
         final log = ExtensionLog.fromJson(jsonDecode(call.arguments));
         if (_selectedExtension == null) {
@@ -118,6 +119,7 @@ class _ExtensionDebugWindowState extends State<ExtensionDebugWindow> {
           );
         }
       }
+    });
     });
     _getInstalledExtensions();
     super.initState();

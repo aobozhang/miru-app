@@ -352,49 +352,50 @@ class DetailPageController extends GetxController {
     }
 
     if (type == ExtensionType.bangumi) {
+      // For bangumi (video), use external player
       final player = MiruStorage.getSetting(SettingKey.videoPlayer);
 
-      if (player != 'built-in') {
+      showPlatformSnackbar(
+        context: currentContext,
+        content: FlutterI18n.translate(
+          currentContext,
+          'external-player-launching',
+          translationParams: {
+            'player': player,
+          },
+        ),
+      );
+      late ExtensionBangumiWatch watchData;
+      try {
+        watchData = await runtime.value!.watch(urls[index].url)
+            as ExtensionBangumiWatch;
+      } catch (e) {
         showPlatformSnackbar(
           context: currentContext,
-          content: FlutterI18n.translate(
-            currentContext,
-            'external-player-launching',
-            translationParams: {
-              'player': player,
-            },
-          ),
+          content: e.toString().split('\n')[0],
+          severity: fluent.InfoBarSeverity.error,
         );
-        late ExtensionBangumiWatch watchData;
-        try {
-          watchData = await runtime.value!.watch(urls[index].url)
-              as ExtensionBangumiWatch;
-        } catch (e) {
-          showPlatformSnackbar(
-            context: currentContext,
-            content: e.toString().split('\n')[0],
-            severity: fluent.InfoBarSeverity.error,
-          );
-          return;
-        }
-        try {
-          if (GetPlatform.isMobile) {
-            await launchMobileExternalPlayer(watchData.url, player);
-            return;
-          }
-          await launchDesktopExternalPlayer(watchData.url, player,
-              watchData.headers ?? {}, watchData.subtitles ?? []);
-          return;
-        } catch (e) {
-          showPlatformSnackbar(
-            context: currentContext,
-            content: e.toString().split('\n')[0],
-            severity: fluent.InfoBarSeverity.error,
-          );
-        }
+        return;
       }
+      try {
+        if (GetPlatform.isMobile) {
+          await launchMobileExternalPlayer(watchData.url, player);
+          return;
+        }
+        await launchDesktopExternalPlayer(watchData.url, player,
+            watchData.headers ?? {}, watchData.subtitles ?? []);
+        return;
+      } catch (e) {
+        showPlatformSnackbar(
+          context: currentContext,
+          content: e.toString().split('\n')[0],
+          severity: fluent.InfoBarSeverity.error,
+        );
+      }
+      return;
     }
 
+    // For manga and novels, use the built-in reader
     Navigator.of(context, rootNavigator: true).push(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 600),
@@ -428,6 +429,7 @@ class DetailPageController extends GetxController {
   @override
   void onClose() {
     scrollController.dispose();
+    _flyoutController.dispose();
     Get.find<MainController>().setAcitons([]);
     super.onClose();
   }

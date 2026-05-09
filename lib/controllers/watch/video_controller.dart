@@ -178,6 +178,14 @@ class VideoPlayerController extends GetxController {
 
   // 定时器
   Timer? _dlnaTimer;
+  Timer? _qualitySwitchTimer;
+  StreamSubscription? _positionSubscription;
+  StreamSubscription? _tracksSubscription;
+  StreamSubscription? _completedSubscription;
+  StreamSubscription? _durationSubscription;
+  StreamSubscription? _playingSubscription;
+  StreamSubscription? _errorSubscription;
+  StreamSubscription? _heightSubscription;
 
   @override
   void onInit() async {
@@ -271,7 +279,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 自动切换下一集
-    player.stream.completed.listen((event) {
+    _completedSubscription = player.stream.completed.listen((event) {
       if (!event || playMode.value == PlaylistMode.single) {
         return;
       }
@@ -291,7 +299,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 讀取現在的畫質
-    player.stream.height.listen((event) async {
+    _heightSubscription = player.stream.height.listen((event) async {
       if (player.state.width != null) {
         final width = player.state.width;
         currentQuality.value = "${width}x$event";
@@ -321,7 +329,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 监听 track
-    player.stream.tracks.listen((event) {
+    _tracksSubscription = player.stream.tracks.listen((event) {
       if (event.subtitle.isEmpty) {
         return;
       }
@@ -352,7 +360,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 总时长监听
-    player.stream.duration.listen((event) {
+    _durationSubscription = player.stream.duration.listen((event) {
       if (dlnaDevice.value != null) {
         return;
       }
@@ -360,7 +368,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 监听播放状态
-    player.stream.playing.listen((event) {
+    _playingSubscription = player.stream.playing.listen((event) {
       if (dlnaDevice.value != null) {
         return;
       }
@@ -368,7 +376,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 监听进度
-    player.stream.position.listen((event) {
+    _positionSubscription = player.stream.position.listen((event) {
       if (dlnaDevice.value != null) {
         return;
       }
@@ -376,7 +384,7 @@ class VideoPlayerController extends GetxController {
     });
 
     // 错误监听
-    player.stream.error.listen((event) {
+    _errorSubscription = player.stream.error.listen((event) {
       sendMessage(Message(Text(event)));
     });
   }
@@ -605,12 +613,10 @@ class VideoPlayerController extends GetxController {
     await player.open(
       Media(qualityUrl, httpHeaders: headers),
     );
-    //跳轉到切換之前的時間
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    //跳转到切换之前的时间
+    _qualitySwitchTimer?.cancel();
+    _qualitySwitchTimer = Timer(const Duration(seconds: 2), () {
       player.seek(Duration(seconds: currentSecond));
-      if (player.state.position.inSeconds == currentSecond) {
-        timer.cancel();
-      }
     });
   }
 
@@ -826,6 +832,14 @@ class VideoPlayerController extends GetxController {
       }
     }
     _dlnaTimer?.cancel();
+    _qualitySwitchTimer?.cancel();
+    _positionSubscription?.cancel();
+    _tracksSubscription?.cancel();
+    _completedSubscription?.cancel();
+    _durationSubscription?.cancel();
+    _playingSubscription?.cancel();
+    _errorSubscription?.cancel();
+    _heightSubscription?.cancel();
     player.pause();
     try {
       await _saveHistory();

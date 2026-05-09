@@ -433,7 +433,7 @@ class _DetailPageState extends State<DetailPage> {
                                       onTap: () {
                                         launchUrl(
                                           Uri.parse(
-                                            "https://www.themoviedb.org/person/${cast.id}}",
+                                            "https://www.themoviedb.org/person/${cast.id}",
                                           ),
                                         );
                                       },

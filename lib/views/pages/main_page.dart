@@ -50,16 +50,11 @@ class _DesktopMainPageState extends State<DesktopMainPage> with WindowListener {
   }
 
   Widget _title() {
-    return const DragToMoveArea(
-      child: Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Text(
-          'Miru',
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+    return const Text(
+      'Miru',
+      style: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -67,37 +62,6 @@ class _DesktopMainPageState extends State<DesktopMainPage> with WindowListener {
   @override
   Widget build(BuildContext context) {
     return fluent.NavigationView(
-      appBar: fluent.NavigationAppBar(
-        leading: () {
-          return fluent.IconButton(
-            icon: const Icon(fluent.FluentIcons.back, size: 12.0),
-            onPressed: () {
-              if (router.canPop()) {
-                context.pop();
-                setState(() {});
-              }
-            },
-          );
-        }(),
-        title: _title(),
-        actions: Obx(
-          () => Row(
-            children: [
-              const Spacer(),
-              ...c.actions,
-              SizedBox(
-                width: 138,
-                height: 50,
-                child: WindowCaption(
-                  backgroundColor: Colors.transparent,
-                  brightness: fluent.FluentTheme.of(context).brightness,
-                ),
-              )
-            ],
-          ),
-        ),
-        automaticallyImplyLeading: false,
-      ),
       paneBodyBuilder: (item, body) {
         return widget.child;
       },
@@ -106,6 +70,18 @@ class _DesktopMainPageState extends State<DesktopMainPage> with WindowListener {
         selected: c.selectedTab.value,
         onChanged: c.changeTab,
         displayMode: fluent.PaneDisplayMode.compact,
+        header: Container(
+          height: 50,
+          padding: const EdgeInsets.only(left: 8),
+          child: fluent.IconButton(
+            icon: const Icon(fluent.FluentIcons.back, size: 16.0),
+            onPressed: () {
+              if (router.canPop()) {
+                context.pop();
+              }
+            },
+          ),
+        ),
         footerItems: [
           fluent.PaneItemSeparator(),
           fluent.PaneItem(

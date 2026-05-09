@@ -78,7 +78,8 @@ class _InfiniteScrollerState extends State<InfiniteScroller> {
   Widget _buildDesktop(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        if (notification is ScrollUpdateNotification) {
+        // Use ScrollEndNotification instead of ScrollUpdateNotification to reduce callbacks
+        if (notification is ScrollEndNotification) {
           _onScroll(notification.metrics);
         }
         return false;

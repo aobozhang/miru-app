@@ -16,7 +16,11 @@ class MiruRequest {
   static bool _isInitialized = false;
 
   static Future<void> ensureInitialized() async {
-    dio = Dio();
+    dio = Dio(BaseOptions(
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
+    ));
     final cookieManager = CookieManager(_cookieJar);
     dio.interceptors.add(cookieManager);
     refreshProxy();

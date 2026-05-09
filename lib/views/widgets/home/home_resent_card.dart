@@ -69,13 +69,8 @@ class _HomeRecentCardState extends State<HomeRecentCard> {
     if (widget.history.type == ExtensionType.bangumi || noCover) {
       return;
     }
-    final paletteGenerator = await PaletteGenerator.fromImageProvider(
-      provider,
-      maximumColorCount: 2,
-    );
-
-    primaryColor = paletteGenerator.colors.firstOrNull;
-
+    // Use deterministic color from title hash instead of expensive PaletteGenerator
+    primaryColor = ColorUtils.getColorByText(widget.history.title);
     if (mounted) {
       setState(() {});
     }

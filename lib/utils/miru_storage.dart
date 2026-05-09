@@ -111,7 +111,7 @@ class MiruStorage {
     await _initSetting(SettingKey.novelFontSize, 18.0);
     await _initSetting(SettingKey.theme, 'system');
     await _initSetting(SettingKey.enableNSFW, false);
-    await _initSetting(SettingKey.videoPlayer, 'built-in');
+    await _initSetting(SettingKey.videoPlayer, 'vlc');
     await _initSetting(SettingKey.listMode, "grid");
     await _initSetting(SettingKey.keyI, 10.0);
     await _initSetting(SettingKey.keyJ, -10.0);

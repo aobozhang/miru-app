@@ -50,20 +50,18 @@ class _SearchAllExtSearchState extends State<SearchAllExtSearch> {
         ),
       );
     }
-    return SingleChildScrollView(
+    return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          for (var index = 0; index < widget.runtimeList.length; index++)
-            SearchAllTile(
-              kw: widget.kw,
-              searchResult: widget.runtimeList[index],
-              onClickMore: () {
-                widget.onClickMore(index);
-              },
-            )
-        ],
-      ),
+      itemCount: widget.runtimeList.length,
+      itemBuilder: (context, index) {
+        return SearchAllTile(
+          kw: widget.kw,
+          searchResult: widget.runtimeList[index],
+          onClickMore: () {
+            widget.onClickMore(index);
+          },
+        );
+      },
     );
   }
 }

@@ -21,6 +21,11 @@ import 'package:path/path.dart' as path;
 class ExtensionUtils {
   static Map<String, ExtensionService> runtimes = {};
   static Map<String, String> extensionErrorMap = {};
+  static WindowController? _debugWindowController;
+
+  static void setDebugWindowController(WindowController? controller) {
+    _debugWindowController = controller;
+  }
 
   static String get extensionsDir => path.join(
         MiruDirectory.getDirectory,
@@ -174,16 +179,11 @@ class ExtensionUtils {
     ExtensionLogLevel level,
     String logContent,
   ) async {
-    if (!Get.isRegistered<SettingsController>()) {
-      return;
-    }
-    final windowId = Get.find<SettingsController>().extensionLogWindowId.value;
-    if (windowId == -1) {
+    if (_debugWindowController == null) {
       return;
     }
     try {
-      DesktopMultiWindow.invokeMethod(
-        windowId,
+      await _debugWindowController!.invokeMethod(
         "addLog",
         jsonEncode(
           ExtensionLog(
@@ -203,16 +203,11 @@ class ExtensionUtils {
     String key,
     ExtensionNetworkLog log,
   ) {
-    if (!Get.isRegistered<SettingsController>()) {
-      return;
-    }
-    final windowId = Get.find<SettingsController>().extensionLogWindowId.value;
-    if (windowId == -1) {
+    if (_debugWindowController == null) {
       return;
     }
     try {
-      DesktopMultiWindow.invokeMethod(
-        windowId,
+      _debugWindowController!.invokeMethod(
         "addNetworkLog",
         jsonEncode({
           'key': key,

@@ -65,6 +65,6 @@ class ApplicationController extends GetxController {
   changeTheme(String mode) {
     MiruStorage.setSetting(SettingKey.theme, mode);
     themeText.value = mode;
-    Get.forceAppUpdate();
+    // GetX reactivity handles theme updates automatically
   }
 }

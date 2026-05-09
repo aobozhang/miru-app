@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:get/get.dart';
 import 'package:miru_app/models/extension.dart';
@@ -247,22 +248,30 @@ class _DetailEpisodesState extends State<DetailEpisodes> {
 
   @override
   Widget build(BuildContext context) {
+    // 只在 episodes 实际变化时才重建列表项
     return Obx(() {
-      episodes = c.isLoading.value ? [] : c.detail!.episodes ?? [];
-      dropdownItems = [
-        for (var i = 0; i < episodes.length; i++)
-          DropdownMenuItem<int>(
-            value: i,
-            child: Text(episodes[i].title),
-          )
-      ];
-      comboBoxItems = [
-        for (var i = 0; i < episodes.length; i++)
-          fluent.ComboBoxItem<int>(
-            value: i,
-            child: Text(episodes[i].title),
-          )
-      ];
+      final isLoading = c.isLoading.value;
+      final newEpisodes = isLoading ? <ExtensionEpisodeGroup>[] : c.detail!.episodes ?? <ExtensionEpisodeGroup>[];
+
+      // 只有 episodes 真正变化时才重建下拉项
+      if (episodes != newEpisodes) {
+        episodes = newEpisodes;
+        dropdownItems = [
+          for (var i = 0; i < episodes.length; i++)
+            DropdownMenuItem<int>(
+              value: i,
+              child: Text(episodes[i].title),
+            )
+        ];
+        comboBoxItems = [
+          for (var i = 0; i < episodes.length; i++)
+            fluent.ComboBoxItem<int>(
+              value: i,
+              child: Text(episodes[i].title),
+            )
+        ];
+      }
+
       return PlatformBuildWidget(
         androidBuilder: _buildAndroidEpisodes,
         desktopBuilder: _buildDesktopEpisodes,

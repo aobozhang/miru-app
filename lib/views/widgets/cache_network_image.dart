@@ -52,6 +52,7 @@ class CacheNetWorkImagePic extends StatelessWidget {
       height: height,
       cache: true,
       mode: mode,
+      gaplessPlayback: true, // 保持播放状态，避免切换页面时重新加载闪烁
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
@@ -141,7 +142,7 @@ class _ThumnailPageState extends State<_ThumnailPage> {
     }
     // 打开目录选择对话框file_picker
 
-    final path = await FilePicker.platform.saveFile(
+    final path = await FilePicker.saveFile(
       type: FileType.image,
       fileName: fileName,
     );

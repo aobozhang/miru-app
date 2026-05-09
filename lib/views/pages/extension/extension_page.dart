@@ -121,7 +121,7 @@ class _ExtensionPageState extends State<ExtensionPage> {
         PlatformFilledButton(
           child: Text('extension.import.import-by-local'.i18n),
           onPressed: () async {
-            FilePickerResult? result = await FilePicker.platform.pickFiles(
+            FilePickerResult? result = await FilePicker.pickFiles(
               type: FileType.custom,
               allowedExtensions: ['js'],
             );

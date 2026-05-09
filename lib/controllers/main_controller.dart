@@ -23,8 +23,8 @@ class MainController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    SchedulerBinding.instance.addPersistentFrameCallback((_) async {
-      // 判断 bt_server 是否已经安装
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      // 判断 bt_server 是否已经安装 - 只在第一帧执行一次
       final isInstalled = await BTServerUtils.isInstalled();
       if (isInstalled) {
         BTServerUtils.checkServer();
