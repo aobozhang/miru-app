@@ -764,9 +764,7 @@ async function stringify(callback) {
 
       switch (extension.type) {
         case ExtensionType.bangumi:
-          final result = ExtensionBangumiWatch.fromJson(data);
-          result.headers ??= await _defaultHeaders;
-          return result;
+          throw Exception('Video content is no longer supported');
         case ExtensionType.manga:
           final result = ExtensionMangaWatch.fromJson(data);
           result.headers ??= await _defaultHeaders;

@@ -47,9 +47,7 @@ class _HomeRecentCardState extends State<HomeRecentCard> {
   void initState() {
     _getUpdate();
 
-    if (widget.history.type != ExtensionType.bangumi) {
-      _genColor();
-    }
+    _genColor();
 
     super.initState();
   }
@@ -66,7 +64,7 @@ class _HomeRecentCardState extends State<HomeRecentCard> {
   }
 
   _genColor() async {
-    if (widget.history.type == ExtensionType.bangumi || noCover) {
+    if (noCover) {
       return;
     }
     // Use deterministic color from title hash instead of expensive PaletteGenerator
@@ -87,83 +85,6 @@ class _HomeRecentCardState extends State<HomeRecentCard> {
   _delectAll() async {
     await DatabaseService.deleteAllHistory();
     Get.find<HomePageController>().refreshHistory();
-  }
-
-  Widget _bangumiCard() {
-    return Container(
-      width: 350,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          Image.file(
-            File(widget.history.cover!),
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              width: 350,
-              height: 60,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.8),
-                  ],
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.history.title,
-                            style: const TextStyle(color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            FlutterI18n.translate(
-                              context,
-                              "home.watched",
-                              translationParams: {
-                                "ep": widget.history.episodeTitle,
-                              },
-                            ),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                            maxLines: 1,
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_update.isNotEmpty) ...[
-                      const SizedBox(width: 8),
-                      Text(
-                        _update,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ]
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _coverCard() {
@@ -286,9 +207,7 @@ class _HomeRecentCardState extends State<HomeRecentCard> {
               ).toString(),
             );
           },
-          child: widget.history.type == ExtensionType.bangumi
-              ? _bangumiCard()
-              : _coverCard(),
+          child: _coverCard(),
         ),
       ),
     );

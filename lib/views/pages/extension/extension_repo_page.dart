@@ -50,10 +50,6 @@ class _ExtensionRepoPageState extends State<ExtensionRepoPage> {
                         label: Text('common.show-all'.i18n),
                       ),
                       ButtonSegment(
-                        value: ExtensionType.bangumi,
-                        label: Text('extension-type.video'.i18n),
-                      ),
-                      ButtonSegment(
                         value: ExtensionType.manga,
                         label: Text('extension-type.comic'.i18n),
                       ),
@@ -205,10 +201,6 @@ class _ExtensionRepoPageState extends State<ExtensionRepoPage> {
                     fluent.ComboBoxItem(
                       value: "all",
                       child: Text('common.show-all'.i18n),
-                    ),
-                    fluent.ComboBoxItem(
-                      value: ExtensionType.bangumi.toString(),
-                      child: Text('extension-type.video'.i18n),
                     ),
                     fluent.ComboBoxItem(
                       value: ExtensionType.manga.toString(),

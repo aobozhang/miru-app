@@ -71,7 +71,6 @@ class _SearchPageState extends State<SearchPage> {
           bottom: TabBar(
             tabs: [
               Tab(text: 'search.all'.i18n),
-              Tab(text: 'extension-type.video'.i18n),
               Tab(text: 'extension-type.comic'.i18n),
               Tab(text: 'extension-type.novel'.i18n),
             ],
@@ -81,12 +80,9 @@ class _SearchPageState extends State<SearchPage> {
                   c.getRuntime();
                   break;
                 case 1:
-                  c.getRuntime(type: ExtensionType.bangumi);
-                  break;
-                case 2:
                   c.getRuntime(type: ExtensionType.manga);
                   break;
-                case 3:
+                case 2:
                   c.getRuntime(type: ExtensionType.fikushon);
                   break;
               }
@@ -179,17 +175,6 @@ class _SearchPageState extends State<SearchPage> {
                                 Text("search.all".i18n),
                               ],
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          fluent.ToggleButton(
-                            checked: c.cuurentExtensionType.value ==
-                                ExtensionType.bangumi,
-                            onChanged: (value) {
-                              if (value) {
-                                c.getRuntime(type: ExtensionType.bangumi);
-                              }
-                            },
-                            child: Text('extension-type.video'.i18n),
                           ),
                           const SizedBox(width: 8),
                           fluent.ToggleButton(

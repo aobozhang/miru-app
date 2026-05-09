@@ -28,9 +28,6 @@ dependencies:
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   json_annotation: ^4.8.1
-  media_kit: ^1.1.10+1
-  media_kit_video: ^2.0.1
-  media_kit_libs_video: ^1.0.4
   package_info_plus: ^10.1.0
   palette_generator: ^0.3.3+2
   path: ^1.8.3
@@ -61,8 +58,6 @@ dependencies:
   share_plus: ^13.1.0
   volume_controller: ^3.4.4
   screen_brightness: ^2.1.7
-  auto_orientation: ^2.3.1
-  dlna_dart: ^0.1.0
 
 dev_dependencies:
   flutter_test:

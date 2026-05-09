@@ -27,7 +27,6 @@ class DetailTrackingButton extends StatefulWidget {
 class _DetailTrackingButtonState extends State<DetailTrackingButton> {
   late final c = Get.find<DetailPageController>(tag: widget.tag);
   final anlistExtensionMap = <ExtensionType, AnilistType>{
-    ExtensionType.bangumi: AnilistType.anime,
     ExtensionType.manga: AnilistType.manga,
   };
 

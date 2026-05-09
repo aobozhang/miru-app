@@ -18,7 +18,6 @@ import 'package:miru_app/router/router.dart';
 import 'package:miru_app/data/services/database_service.dart';
 import 'package:miru_app/utils/extension.dart';
 import 'package:miru_app/data/services/extension_service.dart';
-import 'package:miru_app/utils/external_player.dart';
 import 'package:miru_app/utils/i18n.dart';
 import 'package:miru_app/utils/miru_storage.dart';
 import 'package:miru_app/views/widgets/messenger.dart';
@@ -352,46 +351,15 @@ class DetailPageController extends GetxController {
     }
 
     if (type == ExtensionType.bangumi) {
-      // For bangumi (video), use external player
-      final player = MiruStorage.getSetting(SettingKey.videoPlayer);
-
+      // Video content has been removed
       showPlatformSnackbar(
         context: currentContext,
         content: FlutterI18n.translate(
           currentContext,
-          'external-player-launching',
-          translationParams: {
-            'player': player,
-          },
+          'common.video-removed',
         ),
+        severity: fluent.InfoBarSeverity.warning,
       );
-      late ExtensionBangumiWatch watchData;
-      try {
-        watchData = await runtime.value!.watch(urls[index].url)
-            as ExtensionBangumiWatch;
-      } catch (e) {
-        showPlatformSnackbar(
-          context: currentContext,
-          content: e.toString().split('\n')[0],
-          severity: fluent.InfoBarSeverity.error,
-        );
-        return;
-      }
-      try {
-        if (GetPlatform.isMobile) {
-          await launchMobileExternalPlayer(watchData.url, player);
-          return;
-        }
-        await launchDesktopExternalPlayer(watchData.url, player,
-            watchData.headers ?? {}, watchData.subtitles ?? []);
-        return;
-      } catch (e) {
-        showPlatformSnackbar(
-          context: currentContext,
-          content: e.toString().split('\n')[0],
-          severity: fluent.InfoBarSeverity.error,
-        );
-      }
       return;
     }
 

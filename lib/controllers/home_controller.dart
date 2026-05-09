@@ -24,10 +24,6 @@ class HomePageController extends GetxController {
     favorites.clear();
     await refreshHistory();
     favorites.addAll({
-      ExtensionType.bangumi: await DatabaseService.getFavoritesByType(
-        type: ExtensionType.bangumi,
-        limit: 20,
-      ),
       ExtensionType.manga: await DatabaseService.getFavoritesByType(
         type: ExtensionType.manga,
         limit: 20,

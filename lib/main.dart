@@ -6,7 +6,6 @@ import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:miru_app/controllers/application_controller.dart';
 import 'package:miru_app/utils/log.dart';
 import 'package:miru_app/utils/miru_directory.dart';
@@ -56,7 +55,6 @@ void main(List<String> args) async {
     }
     await MiruRequest.ensureInitialized();
     ExtensionUtils.ensureInitialized();
-    MediaKit.ensureInitialized();
 
     if (!Platform.isAndroid) {
       await windowManager.ensureInitialized();

@@ -61,12 +61,6 @@ class _HomePageState extends State<HomePage> {
                     : const SizedBox.shrink()),
                 const SizedBox(height: 16),
                 // 每个 HomeFavorites 只监听自己对应的类型
-                Obx(() => c.favorites[ExtensionType.bangumi]!.isNotEmpty
-                    ? HomeFavorites(
-                        type: ExtensionType.bangumi,
-                        data: c.favorites[ExtensionType.bangumi]!,
-                      )
-                    : const SizedBox.shrink()),
                 Obx(() => c.favorites[ExtensionType.manga]!.isNotEmpty
                     ? HomeFavorites(
                         type: ExtensionType.manga,

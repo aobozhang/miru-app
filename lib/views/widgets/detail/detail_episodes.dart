@@ -125,12 +125,7 @@ class _DetailEpisodesState extends State<DetailEpisodes> {
   }
 
   Widget _buildDesktopEpisodes(BuildContext context) {
-    late String episodesString;
-    if (c.type == ExtensionType.bangumi) {
-      episodesString = 'video.episodes'.i18n;
-    } else {
-      episodesString = 'reader.chapters'.i18n;
-    }
+    final episodesString = 'reader.chapters'.i18n;
 
     Widget cardTile(Widget child) {
       return CardTile(

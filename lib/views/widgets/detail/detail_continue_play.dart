@@ -23,15 +23,8 @@ class _DetailContinuePlayState extends State<DetailContinuePlay> {
 
   Widget _buildAndroid(BuildContext context) {
     return Obx(() {
-      late String noEpisodesString;
-      late String watchNowString;
-      if (c.type == ExtensionType.bangumi) {
-        noEpisodesString = 'video.no-episodes'.i18n;
-        watchNowString = 'video.watch-now'.i18n;
-      } else {
-        noEpisodesString = 'reader.no-chapters'.i18n;
-        watchNowString = 'reader.read-now'.i18n;
-      }
+      final noEpisodesString = 'reader.no-chapters'.i18n;
+      final watchNowString = 'reader.read-now'.i18n;
 
       final noEpisodes = FilledButton.icon(
         onPressed: () {},

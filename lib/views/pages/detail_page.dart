@@ -65,12 +65,7 @@ class _DetailPageState extends State<DetailPage> {
   Widget _buildAndroidDetail(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        late String episodesString;
-        if (c.type == ExtensionType.bangumi) {
-          episodesString = 'video.episodes'.i18n;
-        } else {
-          episodesString = 'reader.chapters'.i18n;
-        }
+        final episodesString = 'reader.chapters'.i18n;
 
         if (c.error.value.isNotEmpty) {
           return Center(
@@ -80,7 +75,6 @@ class _DetailPageState extends State<DetailPage> {
         final tabs = [
           if (!LayoutUtils.isTablet) Tab(text: episodesString),
           Tab(text: 'detail.overview'.i18n),
-          if (c.type == ExtensionType.bangumi) Tab(text: 'detail.cast'.i18n),
         ];
 
         final content = DefaultTabController(
@@ -160,63 +154,6 @@ class _DetailPageState extends State<DetailPage> {
                     DetailOverView(
                       tag: widget.tag,
                     ),
-                    if (c.type == ExtensionType.bangumi)
-                      Obx(() {
-                        if (c.tmdbDetail == null ||
-                            c.tmdbDetail!.casts.isEmpty) {
-                          return Column(
-                            children: [
-                              const SizedBox(height: 100),
-                              Text('detail.no-tmdb-data'.i18n),
-                              const SizedBox(height: 8),
-                              FilledButton(
-                                onPressed: () {
-                                  c.modifyTMDBBinding();
-                                },
-                                child: Text(
-                                  'detail.modify-tmdb-binding'.i18n,
-                                ),
-                              )
-                            ],
-                          );
-                        }
-                        return ListView.builder(
-                          padding: const EdgeInsets.all(0),
-                          itemBuilder: (context, index) {
-                            final cast = c.tmdbDetail!.casts[index];
-                            late String url = '';
-                            if (cast.profilePath != null) {
-                              url =
-                                  TmdbApi.getImageUrl(cast.profilePath!) ?? '';
-                            }
-
-                            return ListTile(
-                              leading: Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: CacheNetWorkImagePic(
-                                  url,
-                                  width: 50,
-                                  height: 50,
-                                  headers: c.detail?.headers,
-                                ),
-                              ),
-                              title: Text(cast.name),
-                              subtitle: Text(cast.character),
-                              onTap: () {
-                                launchUrl(
-                                  Uri.parse(
-                                    "https://www.themoviedb.org/person/${cast.id}",
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          itemCount: c.tmdbDetail!.casts.length,
-                        );
-                      }),
                   ],
                 ),
               ),
