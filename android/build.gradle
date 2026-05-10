@@ -25,6 +25,10 @@ subprojects { subproject ->
                     }
                 }
             }
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_11
+                targetCompatibility JavaVersion.VERSION_11
+            }
         }
     }
 }
@@ -35,6 +39,19 @@ subprojects { subproject ->
             kotlinOptions {
                 jvmTarget = '11'
             }
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_11
+                targetCompatibility JavaVersion.VERSION_11
+            }
+        }
+    }
+}
+
+subprojects { subproject ->
+    subproject.pluginManager.withPlugin("java-library") {
+        subproject.java {
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
     }
 }
