@@ -53,6 +53,19 @@ subprojects { subproject ->
     }
 }
 
+subprojects { subproject ->
+    subproject.pluginManager.withPlugin("com.android.application") {
+        def android = subproject.android
+        if (android != null) {
+            android.compileSdkVersion 36
+            android.compileOptions {
+                sourceCompatibility JavaVersion.VERSION_11
+                targetCompatibility JavaVersion.VERSION_11
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
