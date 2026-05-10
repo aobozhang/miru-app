@@ -14,19 +14,10 @@ subprojects {
 }
 
 subprojects { subproject ->
-    subproject.afterEvaluate {
+    subproject.plugins.whenPluginAdded {
         if (subproject.hasProperty("android")) {
             def android = subproject.android
             if (android != null) {
-                if (android.namespace == null) {
-                    def manifest = file("${subproject.projectDir}/src/main/AndroidManifest.xml")
-                    if (manifest.exists()) {
-                        def pkg = new XmlSlurper().parse(manifest).@package.text()
-                        if (pkg) {
-                            android.namespace = pkg
-                        }
-                    }
-                }
                 android.compileSdkVersion 36
                 android.compileOptions {
                     sourceCompatibility JavaVersion.VERSION_11
