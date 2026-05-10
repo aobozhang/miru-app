@@ -40,6 +40,8 @@ jobs:
         with:
           flutter-version: 3.41.9
           channel: stable
+      - name: Setup Gradle
+        uses: gradle/setup-gradle@v4
       - name: Decode keystore
         run: |
           echo $ENCODED_KEYSTORE | base64 -di > android/app/keystore.jks
