@@ -14,22 +14,41 @@ subprojects {
 }
 
 subprojects { subproject ->
-    subproject.plugins.whenPluginAdded {
-        if (subproject.hasProperty("android")) {
-            def android = subproject.android
-            if (android != null) {
-                android.compileSdkVersion 36
-                android.compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_11
-                    targetCompatibility JavaVersion.VERSION_11
+    subproject.pluginManager.withPlugin("com.android.library") {
+        subproject.android {
+            if (namespace == null) {
+                def manifest = file("${subproject.projectDir}/src/main/AndroidManifest.xml")
+                if (manifest.exists()) {
+                    def pkg = new XmlSlurper().parse(manifest).@package.text()
+                    if (pkg) {
+                        namespace = pkg
+                    }
                 }
             }
-        }
-        if (subproject.hasProperty("java")) {
-            subproject.java {
-                sourceCompatibility = JavaVersion.VERSION_11
-                targetCompatibility = JavaVersion.VERSION_11
+            compileSdkVersion 36
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_11
+                targetCompatibility JavaVersion.VERSION_11
             }
+        }
+    }
+}
+
+subprojects { subproject ->
+    subproject.pluginManager.withPlugin("org.jetbrains.kotlin.android") {
+        subproject.android {
+            kotlinOptions {
+                jvmTarget = '11'
+            }
+        }
+    }
+}
+
+subprojects { subproject ->
+    subproject.pluginManager.withPlugin("java-library") {
+        subproject.java {
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
     }
 }
