@@ -29,6 +29,16 @@ subprojects { subproject ->
     }
 }
 
+subprojects { subproject ->
+    subproject.pluginManager.withPlugin("org.jetbrains.kotlin.android") {
+        subproject.android {
+            kotlinOptions {
+                jvmTarget = '11'
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
